@@ -1,0 +1,288 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thinkdocs"
+version = "0.1.0"
+authors = [
+    {name = "Krunal Chauhan", email = "krunal96369@gmail.com"},
+]
+description = "AI-Powered Intelligent Document Assistant"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    # Web Framework & API (Core)
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+    "python-socketio>=5.8.0,<6.0.0",
+
+    # Database & Caching
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    "redis>=5.0.0",
+
+    # Data Processing (Essential)
+    "pandas>=2.1.0",
+    "numpy>=1.25.0",
+    "pydantic>=2.4.0",
+    "pydantic-settings>=2.0.0",
+
+    # Security & Auth
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.6",
+    "PyJWT>=2.8.0",
+    "bcrypt>=4.0.1",
+
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "httpx>=0.25.0",
+    "tenacity>=8.2.3",
+    "click>=8.1.0",
+
+    # Basic monitoring
+    "prometheus-client>=0.18.0",
+    "structlog>=23.2.0",
+
+    # Task Queue
+    "celery>=5.3.0",
+    "kombu>=5.3.0",
+
+    # Database drivers
+    "psycopg2-binary>=2.9.7",
+    "asyncpg>=0.29.0",
+
+    # Basic AI/ML
+    "google-generativeai>=0.3.0",
+
+    # Document Processing (Essential)
+    "PyPDF2>=3.0.1",
+    "pdfplumber>=0.10.0",
+    "PyMuPDF>=1.23.0",
+    "python-docx>=1.1.0",
+
+    # Lightweight vector DB alternative
+    "chromadb>=0.4.18",
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "httpx>=0.25.0",  # for testing FastAPI
+
+    # Code Quality
+    "black>=23.9.0",
+    "isort>=5.12.0",
+    "flake8>=6.1.0",
+    "mypy>=1.6.0",
+    "pre-commit>=3.5.0",
+
+    # Development Tools
+    "jupyter>=1.0.0",
+    "ipython>=8.16.0",
+    "watchdog>=3.0.0",
+]
+
+# Free MLOps stack
+mlops = [
+    # Self-hosted MLOps & Orchestration
+    "mlflow>=2.7.0",
+    "wandb>=0.16.0",  # Free tier available
+
+    # AWS SDK (Free tier integration)
+    "boto3>=1.29.0",
+    "awscli>=1.29.0",
+
+    # Infrastructure as Code
+    "pulumi>=3.0.0",  # Alternative to Terraform
+    "docker>=6.0.0",
+]
+
+# OCR capabilities (optional)
+ocr = [
+    "pytesseract>=0.3.10",
+    "opencv-python>=4.8.0",
+    "pillow>=10.0.0",
+    "easyocr>=1.7.0",
+]
+
+# Student extras (lightweight alternatives)
+student = [
+    # Core ML/AI (API-based, no heavy downloads)
+    "google-generativeai>=0.3.0",  # Gemini API (free tier)
+    "openai>=1.3.0",  # OpenAI API (fallback)
+
+    # Document Processing
+    "pypdf>=3.17.0",
+    "PyPDF2>=3.0.1",  # Alternative PDF library
+    "pdfplumber>=0.10.0",  # Advanced PDF extraction
+    "PyMuPDF>=1.23.0",  # Fast PDF processing (fitz)
+    "python-docx>=1.1.0",
+    "beautifulsoup4>=4.12.2",
+    "markdown>=3.5.1",
+
+    # Vector Database (Free) - Note: chromadb temporarily removed due to heavy dependencies
+    # "chromadb>=0.4.18",  # Re-enable after core system works
+
+    # AI/ML embeddings and processing
+    "sentence-transformers>=2.2.2",  # For document embeddings
+    "torch>=2.0.0",  # PyTorch for ML models
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",  # For TF-IDF and simple embeddings
+
+    # Database for development
+    "psycopg2-binary>=2.9.7",
+    "asyncpg>=0.29.0",
+
+    # Task Queue & Monitoring
+    "celery>=5.3.0",
+    "kombu>=5.3.0",
+    "flower>=2.0.1",
+
+    # Security & Auth
+    "pydantic[email]>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "python-jose[cryptography]>=3.3.0",
+    "PyJWT>=2.8.0",
+    "bcrypt>=4.0.1",
+    "passlib[bcrypt]>=1.7.4",
+    "python-multipart>=0.0.6",
+
+    # Monitoring & Logging
+    "structlog>=23.2.0",
+    "prometheus-client>=0.19.0",
+    "psutil>=5.9.0",  # System monitoring
+
+    # Utilities
+    "httpx>=0.25.2",
+
+    # Lightweight alternatives for development
+    "duckdb>=0.9.0",  # Fast analytical database
+    "streamlit>=1.28.0",  # Quick UI prototyping
+]
+
+# Production extras (when using paid services)
+production = [
+    # Premium services (when budget allows)
+    "weaviate-client>=3.25.0",
+    "sentry-sdk[fastapi]>=1.38.0",
+
+    # Kubernetes tools
+    "kubernetes>=28.1.0",
+
+    # Advanced monitoring
+    "datadog>=0.47.0",
+    "newrelic>=9.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Krunal96369/thinkdocs"
+Documentation = "https://github.com/Krunal96369/thinkdocs/blob/main/README.md"
+Repository = "https://github.com/Krunal96369/thinkdocs.git"
+"Bug Tracker" = "https://github.com/Krunal96369/thinkdocs/issues"
+"Student Guide" = "https://github.com/Krunal96369/thinkdocs/blob/main/docs/STUDENT_DEPLOYMENT.md"
+
+[project.scripts]
+thinkdocs = "api.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*", "model*", "data_pipeline*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["api", "model", "data_pipeline"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+    "chromadb.*",
+    "faiss.*",
+    "transformers.*",
+    "sentence_transformers.*",
+    "celery.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "student: marks tests suitable for student environments",
+]
+
+[tool.coverage.run]
+source = ["api", "model", "data_pipeline"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

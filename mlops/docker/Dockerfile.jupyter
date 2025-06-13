@@ -1,0 +1,34 @@
+# Jupyter Notebook Dockerfile for ThinkDocs development
+FROM jupyter/scipy-notebook:latest
+
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+USER jovyan
+
+# Set work directory
+WORKDIR /home/jovyan/work
+
+# Copy requirements and install dependencies
+COPY pyproject.toml ./
+RUN pip install -e .
+
+# Install additional Jupyter extensions
+RUN pip install jupyterlab-git \
+    jupyterlab-lsp \
+    python-lsp-server[all]
+
+# Copy notebooks
+COPY notebooks/ ./notebooks/
+
+# Expose port
+EXPOSE 8888
+
+# Start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.tokens=''", "--NotebookApp.password=''"]

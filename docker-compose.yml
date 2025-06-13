@@ -1,0 +1,286 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: thinkdocs-postgres
+    environment:
+      POSTGRES_DB: thinkdocs
+      POSTGRES_USER: thinkdocs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./mlops/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+
+  # Redis for caching and task queue
+  redis:
+    image: redis:7-alpine
+    container_name: thinkdocs-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # ChromaDB Vector Database (Default - Free)
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: thinkdocs-chromadb
+    ports:
+      - "8001:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+      - PERSIST_DIRECTORY=/chroma/chroma
+    volumes:
+      - chromadb_data:/chroma/chroma
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+
+  # Weaviate Vector Database (Optional - Production)
+  weaviate:
+    image: semitechnologies/weaviate:1.22.4
+    container_name: thinkdocs-weaviate
+    ports:
+      - "8080:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      DEFAULT_VECTORIZER_MODULE: "none"
+      ENABLE_MODULES: "text2vec-transformers"
+      CLUSTER_HOSTNAME: "node1"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    profiles: ["weaviate"] # Optional service
+
+  # FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: mlops/docker/Dockerfile.api
+      target: development
+    container_name: thinkdocs-api
+    environment:
+      - ENV=development
+      - DATABASE_URL=postgresql+asyncpg://thinkdocs:${POSTGRES_PASSWORD:-dev_password}@postgres:5432/thinkdocs
+      - REDIS_URL=redis://redis:6379/0
+      # Use ChromaDB by default (free)
+      - VECTOR_DB_TYPE=chromadb
+      - VECTOR_DB_URL=http://chromadb:8000
+      # For Weaviate (when using --profile weaviate)
+      - WEAVIATE_URL=http://weaviate:8080
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key-change-in-production}
+      - DEBUG=true
+      # ML settings
+      - LLM__PROVIDER=gemini
+      - LLM__GEMINI_MODEL=gemini-2.5-pro-preview-06-05
+      - LLM__OPENAI_MODEL=gpt-4o-mini
+      - EMBEDDING__BATCH_SIZE=16
+      - DOCUMENT__CHUNK_SIZE=1000
+      - DOCUMENT__MAX_FILE_SIZE_MB=100
+      # Fix sentence-transformers cache permission issue
+      - HF_HOME=/app/storage/models
+      - TRANSFORMERS_CACHE=/app/storage/models
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - document_storage:/app/storage
+    depends_on:
+      - postgres
+      - redis
+      - chromadb
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    command:
+      [
+        "uvicorn",
+        "api.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+      ]
+
+  # Celery Worker
+  celery-worker:
+    build:
+      context: .
+      dockerfile: mlops/docker/Dockerfile.api
+      target: development
+    container_name: thinkdocs-celery
+    environment:
+      - ENV=development
+      - DATABASE_URL=postgresql+asyncpg://thinkdocs:${POSTGRES_PASSWORD:-dev_password}@postgres:5432/thinkdocs
+      - REDIS_URL=redis://redis:6379/0
+      - VECTOR_DB_TYPE=chromadb
+      - VECTOR_DB_URL=http://chromadb:8000
+      - CELERY_WORKER_CONCURRENCY=4
+      # Fix sentence-transformers cache permission issue
+      - HF_HOME=/app/storage/models
+      - TRANSFORMERS_CACHE=/app/storage/models
+    volumes:
+      - .:/app
+      - document_storage:/app/storage
+    depends_on:
+      - postgres
+      - redis
+      - chromadb
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    command:
+      [
+        "celery",
+        "-A",
+        "api.tasks.celery_app",
+        "worker",
+        "--loglevel=info",
+        "--concurrency=4",
+      ]
+
+  # Celery Flower (Task Monitor)
+  flower:
+    build:
+      context: .
+      dockerfile: mlops/docker/Dockerfile.api
+      target: development
+    container_name: thinkdocs-flower
+    environment:
+      - ENV=development
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery-worker
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    command:
+      [
+        "celery",
+        "--broker=redis://redis:6379/0",
+        "-A",
+        "api.tasks.celery_app",
+        "flower",
+        "--address=0.0.0.0",
+        "--port=5555",
+      ]
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile.dev
+    container_name: thinkdocs-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+      - REACT_APP_ENVIRONMENT=development
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    command: ["npm", "start"]
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: thinkdocs-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./mlops/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+      - "--storage.tsdb.retention.time=15d"
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+
+  # Grafana Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: thinkdocs-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-thinkdocs}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./mlops/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./mlops/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+
+  # Jupyter Notebook (Optional)
+  jupyter:
+    build:
+      context: .
+      dockerfile: mlops/docker/Dockerfile.jupyter
+    container_name: thinkdocs-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-thinkdocs}
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./data:/home/jovyan/data
+      - ./model:/home/jovyan/model
+    networks:
+      - thinkdocs-network
+    restart: unless-stopped
+    profiles: ["jupyter"] # Optional service
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  chromadb_data:
+    driver: local
+  weaviate_data:
+    driver: local
+  document_storage:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  thinkdocs-network:
+    driver: bridge
+    name: thinkdocs-dev-network

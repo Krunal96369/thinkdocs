@@ -1,0 +1,81 @@
+# Multi-stage FastAPI Dockerfile for ThinkDocs
+FROM python:3.11-slim as base
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies including OCR support
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    curl \
+    wget \
+    git \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY pyproject.toml ./
+RUN pip install -e ".[student,ocr]"
+
+# Development stage
+FROM base as development
+
+# Create app user for development
+RUN groupadd -r app && useradd -r -g app app
+
+# Copy source code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p storage/documents storage/models storage/chromadb \
+    && chown -R app:app /app
+
+# Switch to app user
+USER app
+
+# Expose port
+EXPOSE 8000
+
+# Start the application with reload for development
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# Production stage
+FROM base as production
+
+# Create app user for production
+RUN groupadd -r app && useradd -r -g app app
+
+# Copy source code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p storage/documents storage/models storage/chromadb \
+    && chown -R app:app /app
+
+# Switch to app user
+USER app
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Start the application
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
