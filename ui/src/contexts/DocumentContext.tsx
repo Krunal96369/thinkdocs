@@ -1,28 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 import { api } from '../services/api'
 
 interface Document {
   id: string
   filename: string
-  originalName: string
-  fileType: string
-  fileSize: number
-  uploadedAt: string
-  processedAt?: string
-  status: 'uploading' | 'processing' | 'completed' | 'failed'
-  progress?: number
-  processingStage?: string
-  metadata: {
-    pages?: number
-    words?: number
-    language?: string
-    topics?: string[]
-  }
+  title: string
+  size: number
+  content_type: string
+  status: 'processing' | 'completed' | 'failed'
   tags: string[]
-  summary?: string
-  userId: string
+  upload_date: string
+  processed_at?: string
+  user_id: string
+  page_count?: number
+  word_count?: number
 }
 
 interface DocumentSearchResult {
@@ -68,7 +61,7 @@ export function DocumentProvider({ children }: DocumentProviderProps) {
   const [searchResults, setSearchResults] = useState<DocumentSearchResult[]>([])
   const queryClient = useQueryClient()
 
-  // Fetch documents
+  // Fetch documents with optimized caching
   const {
     data: documents = [],
     isLoading: loading,
@@ -77,8 +70,19 @@ export function DocumentProvider({ children }: DocumentProviderProps) {
     queryKey: ['documents'],
     queryFn: async () => {
       const response = await api.get('/documents')
-      return response.data.documents
+      console.log('DocumentContext API response:', response.data)
+
+      // API returns DocumentsListResponse: { documents: [...], total, page, limit }
+      const docs = response.data.documents || []
+      console.log('Extracted documents:', docs)
+
+      // Ensure we always return an array
+      return Array.isArray(docs) ? docs : []
     },
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    cacheTime: 300000, // Keep in cache for 5 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnMount: true, // Refetch when component mounts
   })
 
   // Upload document mutation

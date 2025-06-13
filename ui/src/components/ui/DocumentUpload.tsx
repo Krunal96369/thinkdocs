@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
@@ -19,7 +18,6 @@ interface UploadProgress {
 
 export default function DocumentUpload({ onUploadComplete, className = '' }: DocumentUploadProps) {
   const [uploads, setUploads] = useState<UploadProgress[]>([])
-  const queryClient = useQueryClient()
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const newUploads: UploadProgress[] = acceptedFiles.map(file => ({
@@ -59,9 +57,6 @@ export default function DocumentUpload({ onUploadComplete, className = '' }: Doc
 
         toast.success(`${file.name} uploaded successfully!`)
 
-        // Refresh documents list
-        queryClient.invalidateQueries({ queryKey: ['documents'] })
-
         if (onUploadComplete) {
           onUploadComplete(response.data.document)
         }
@@ -82,7 +77,7 @@ export default function DocumentUpload({ onUploadComplete, className = '' }: Doc
         toast.error(`Failed to upload ${file.name}`)
       }
     }
-  }, [uploads.length, queryClient, onUploadComplete])
+  }, [uploads.length, onUploadComplete])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,

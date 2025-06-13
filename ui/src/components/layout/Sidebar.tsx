@@ -1,22 +1,21 @@
 import {
-    ArrowUpTrayIcon,
-    BoltIcon,
-    ChatBubbleLeftRightIcon,
-    CheckCircleIcon,
-    ClockIcon,
-    Cog6ToothIcon,
-    DocumentTextIcon,
-    FolderIcon,
-    HomeIcon,
-    MagnifyingGlassIcon,
-    PlusIcon,
-    XCircleIcon
+  BoltIcon,
+  ChatBubbleLeftRightIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  Cog6ToothIcon,
+  DocumentTextIcon,
+  FolderIcon,
+  HomeIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline'
 import {
-    ChatBubbleLeftRightIcon as ChatIconSolid,
-    DocumentTextIcon as DocumentIconSolid,
-    HomeIcon as HomeIconSolid,
-    Cog6ToothIcon as SettingsIconSolid,
+  ChatBubbleLeftRightIcon as ChatIconSolid,
+  DocumentTextIcon as DocumentIconSolid,
+  HomeIcon as HomeIconSolid,
+  Cog6ToothIcon as SettingsIconSolid,
 } from '@heroicons/react/24/solid'
 import { clsx } from 'clsx'
 import { useState } from 'react'
@@ -40,10 +39,10 @@ export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showUpload, setShowUpload] = useState(false)
 
-  // Filter documents based on search
-  const filteredDocuments = documents.filter(doc =>
-    (doc.filename || doc.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (doc.originalName || '').toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter documents based on search - ensure documents is an array
+  const documentsArray = Array.isArray(documents) ? documents : []
+  const filteredDocuments = documentsArray.filter(doc =>
+    (doc.filename || '').toLowerCase().includes(searchQuery.toLowerCase())
   ).slice(0, 5) // Show only first 5 results
 
   const getInitials = (name: string) => {
@@ -58,58 +57,58 @@ export default function Sidebar() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircleIcon className="h-3.5 w-3.5 text-green-600" />
+        return <CheckCircleIcon className="w-3 h-3 text-emerald-500" />
       case 'processing':
-        return <BoltIcon className="h-3.5 w-3.5 text-yellow-600 animate-pulse" />
+        return <BoltIcon className="w-3 h-3 text-blue-500 animate-pulse" />
       case 'pending':
-        return <ClockIcon className="h-3.5 w-3.5 text-blue-600" />
+        return <ClockIcon className="w-3 h-3 text-amber-500" />
       case 'failed':
-        return <XCircleIcon className="h-3.5 w-3.5 text-red-600" />
+        return <XCircleIcon className="w-3 h-3 text-red-500" />
       default:
-        return <div className="w-3.5 h-3.5 bg-gray-400 rounded-full" />
+        return <div className="w-3 h-3 bg-slate-300 rounded-full" />
     }
   }
 
   return (
     <>
-      <div className="flex h-full w-64 flex-col bg-white/80 backdrop-blur-sm shadow-xl border-r border-gray-200/50">
+      <div className="flex h-full w-64 flex-col bg-white border-r border-slate-200">
         {/* Header */}
-        <div className="flex h-16 items-center px-6 border-b border-gray-200/50 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="flex h-16 items-center px-6 border-b border-slate-200">
           <div className="flex items-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg">
-              <DocumentTextIcon className="h-6 w-6 text-white" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900">
+              <DocumentTextIcon className="h-5 w-5 text-white" />
             </div>
-            <span className="ml-3 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="ml-3 text-lg font-bold text-slate-900">
               ThinkDocs
             </span>
           </div>
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center px-6 py-4 border-b border-gray-200/50 bg-gradient-to-r from-gray-50 to-blue-50/30">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm shadow-lg">
+        <div className="flex items-center px-6 py-4 border-b border-slate-200 bg-slate-50">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white font-medium text-sm">
             {user?.avatar ? (
               <img
                 src={user.avatar}
                 alt={user.name}
-                className="h-12 w-12 rounded-full object-cover border-2 border-white shadow-lg"
+                className="h-10 w-10 rounded-full object-cover"
               />
             ) : (
               getInitials(user?.name || 'User')
             )}
           </div>
           <div className="ml-3 flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">
+            <p className="text-sm font-semibold text-slate-900 truncate">
               {user?.name}
             </p>
-            <p className="text-xs text-gray-600 truncate">
+            <p className="text-xs text-slate-600 truncate">
               {user?.email}
             </p>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-4 space-y-1">
           {navigation.map((item) => {
             const isActive = location.pathname === item.href ||
               (item.href !== '/dashboard' && location.pathname.startsWith(item.href))
@@ -120,16 +119,16 @@ export default function Sidebar() {
                 key={item.name}
                 to={item.href}
                 className={clsx(
-                  'group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200',
+                  'group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors',
                   isActive
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105'
-                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-gray-900 hover:shadow-md'
+                    ? 'bg-slate-100 text-slate-900'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                 )}
               >
                 <Icon
                   className={clsx(
                     'mr-3 h-5 w-5 flex-shrink-0',
-                    isActive ? 'text-white' : 'text-gray-500 group-hover:text-blue-600'
+                    isActive ? 'text-slate-700' : 'text-slate-500 group-hover:text-slate-700'
                   )}
                 />
                 {item.name}
@@ -138,47 +137,39 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Quick Actions */}
-        <div className="px-4 py-4 border-t border-gray-200/50 space-y-3">
-          <button
-            onClick={() => setShowUpload(true)}
-            className="flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
-            Upload Document
-          </button>
-
+        {/* Quick Actions - Minimal */}
+        <div className="px-4 py-4 border-t border-slate-200">
           <Link
             to="/chat"
-            className="flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md"
+            className="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
           >
-            <PlusIcon className="h-5 w-5 mr-2" />
+            <PlusIcon className="h-4 w-4 mr-2" />
             New Chat
           </Link>
         </div>
 
         {/* Quick Document Access */}
         <div className="px-4 pb-6">
-          <div className="mb-4">
-            <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+          <div className="mb-3">
+            <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
               Recent Documents
             </h3>
           </div>
 
           {/* Search */}
-          <div className="relative mb-4">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <div className="relative mb-3">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
               placeholder="Search documents..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-3 py-2.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 backdrop-blur-sm transition-all duration-200"
+              className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 bg-white transition-all"
             />
           </div>
 
           {/* Document List */}
-          <div className="space-y-1 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 scrollbar-thumb-rounded-full">
+          <div className="space-y-1 max-h-40 overflow-y-auto">
             {loading ? (
               <div className="flex items-center justify-center py-4">
                 <LoadingSpinner size="sm" />
@@ -188,11 +179,11 @@ export default function Sidebar() {
                 <Link
                   key={doc.id}
                   to={`/documents/${doc.id}`}
-                  className="flex items-center px-3 py-2.5 text-xs text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-lg group transition-all duration-200 hover:shadow-sm"
+                  className="flex items-center px-3 py-2 text-xs text-slate-700 hover:bg-slate-100 rounded-lg group transition-colors"
                 >
-                  <FolderIcon className="h-4 w-4 mr-2 text-gray-400 group-hover:text-blue-500 flex-shrink-0 transition-colors duration-200" />
-                  <span className="truncate flex-1 group-hover:text-gray-900 font-medium" title={doc.filename || doc.title || doc.originalName || 'Untitled'}>
-                    {doc.filename || doc.title || doc.originalName || 'Untitled'}
+                  <FolderIcon className="h-4 w-4 mr-2 text-slate-400 group-hover:text-slate-600 flex-shrink-0 transition-colors" />
+                  <span className="truncate flex-1 group-hover:text-slate-900 font-medium" title={doc.filename || 'Untitled'}>
+                    {doc.filename || 'Untitled'}
                   </span>
                   <div className="ml-2 flex-shrink-0" title={`Status: ${doc.status}`}>
                     {getStatusIcon(doc.status)}
@@ -200,67 +191,39 @@ export default function Sidebar() {
                 </Link>
               ))
             ) : (
-              <div className="text-center py-6 bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg border border-gray-100">
-                <div className="flex justify-center mb-2">
-                  <DocumentTextIcon className="h-8 w-8 text-gray-300" />
-                </div>
-                <p className="text-xs text-gray-500 font-medium mb-2">
+              <div className="text-center py-4">
+                <p className="text-xs text-slate-500">
                   {searchQuery ? 'No documents found' : 'No documents yet'}
                 </p>
-                {!searchQuery && (
-                  <p className="text-xs text-gray-400">
-                    Upload your first document to get started
-                  </p>
-                )}
               </div>
             )}
           </div>
-
-          {documents.length > 5 && !searchQuery && (
-            <Link
-              to="/documents"
-              className="block text-xs font-medium text-blue-600 hover:text-purple-600 text-center mt-3 py-2 hover:bg-blue-50 rounded-lg transition-all duration-200"
-            >
-              View all documents ({documents.length})
-            </Link>
-          )}
         </div>
       </div>
 
       {/* Upload Modal */}
       {showUpload && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                Upload Documents
-              </h2>
-              <button
-                onClick={() => setShowUpload(false)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="p-6">
-              <DocumentUpload
-                onUploadComplete={() => {
-                  setShowUpload(false)
-                }}
-              />
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity" onClick={() => setShowUpload(false)} />
+            <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                    <h3 className="text-base font-semibold leading-6 text-slate-900 mb-4">
+                      Upload Document
+                    </h3>
+                    <DocumentUpload
+                      onUploadComplete={(document) => {
+                        setShowUpload(false)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      )}
-
-      {/* Click outside to close upload modal */}
-      {showUpload && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowUpload(false)}
-        />
       )}
     </>
   )

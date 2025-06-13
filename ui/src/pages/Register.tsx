@@ -1,13 +1,12 @@
 import {
-    CheckCircleIcon,
-    DocumentTextIcon,
-    EnvelopeIcon,
-    EyeIcon,
-    EyeSlashIcon,
-    LockClosedIcon,
-    SparklesIcon,
-    UserIcon,
-    XCircleIcon
+  CheckCircleIcon,
+  DocumentTextIcon,
+  EnvelopeIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  LockClosedIcon,
+  UserIcon,
+  XCircleIcon
 } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -104,46 +103,56 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-white">
       <div className="flex min-h-screen">
         {/* Left Side - Branding */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-purple-600 to-blue-700 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10"></div>
-          <div className="relative z-10 flex flex-col justify-center px-12 text-white">
-            <div className="mb-8">
-              <div className="flex items-center mb-6">
-                <div className="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+        <div className="hidden lg:flex lg:w-1/2 bg-slate-50 relative">
+          <div className="flex flex-col justify-center px-12 text-slate-900">
+            <div className="mb-12">
+              <div className="flex items-center mb-8">
+                <div className="h-12 w-12 bg-slate-900 rounded-lg flex items-center justify-center">
                   <DocumentTextIcon className="h-8 w-8 text-white" />
                 </div>
                 <span className="ml-3 text-2xl font-bold">ThinkDocs</span>
               </div>
-              <h1 className="text-4xl font-bold mb-4">
-                Join the Future of Document Intelligence
+              <h1 className="text-4xl font-bold mb-4 text-slate-900">
+                Join ThinkDocs Today
               </h1>
-              <p className="text-xl text-purple-100 mb-8">
-                Create your account and start transforming how you interact with documents using cutting-edge AI technology.
+              <p className="text-xl text-slate-600 mb-12">
+                Create your account and start building your intelligent document library with AI-powered insights.
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <SparklesIcon className="h-5 w-5 text-purple-200 mr-3" />
-                <span className="text-purple-100">100% Free for students and researchers</span>
+            <div className="space-y-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 bg-slate-900 rounded-full flex items-center justify-center mt-0.5">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-semibold text-slate-900 mb-1">Free to Start</h3>
+                  <p className="text-slate-600">Begin with our free tier and upgrade as you grow</p>
+                </div>
               </div>
-              <div className="flex items-center">
-                <SparklesIcon className="h-5 w-5 text-purple-200 mr-3" />
-                <span className="text-purple-100">Secure document processing and storage</span>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 bg-slate-900 rounded-full flex items-center justify-center mt-0.5">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-semibold text-slate-900 mb-1">Secure & Private</h3>
+                  <p className="text-slate-600">Your documents are encrypted and never shared</p>
+                </div>
               </div>
-              <div className="flex items-center">
-                <SparklesIcon className="h-5 w-5 text-purple-200 mr-3" />
-                <span className="text-purple-100">Real-time AI chat with your documents</span>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 bg-slate-900 rounded-full flex items-center justify-center mt-0.5">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="ml-4">
+                  <h3 className="font-semibold text-slate-900 mb-1">Easy Setup</h3>
+                  <p className="text-slate-600">Get started in minutes with our intuitive interface</p>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Decorative elements */}
-          <div className="absolute top-20 right-20 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
-          <div className="absolute bottom-20 left-20 w-24 h-24 bg-blue-300/20 rounded-full blur-xl"></div>
         </div>
 
         {/* Right Side - Register Form */}
@@ -151,30 +160,30 @@ export default function Register() {
           <div className="max-w-md w-full">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-8">
-              <div className="mx-auto h-16 w-16 bg-gradient-to-br from-purple-600 to-blue-700 rounded-xl flex items-center justify-center mb-4">
+              <div className="mx-auto h-16 w-16 bg-slate-900 rounded-lg flex items-center justify-center mb-4">
                 <DocumentTextIcon className="h-10 w-10 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">ThinkDocs</h1>
+              <h1 className="text-2xl font-bold text-slate-900">ThinkDocs</h1>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+            <div className="bg-white rounded-lg border border-slate-200 p-8">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                <h2 className="text-3xl font-bold text-slate-900 mb-2">
                   Create your account
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-slate-600">
                   Join ThinkDocs and unlock AI-powered document intelligence
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
                     Full name
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <UserIcon className="h-5 w-5 text-gray-400" />
+                      <UserIcon className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                       id="name"
@@ -184,8 +193,8 @@ export default function Register() {
                       required
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors ${
-                        errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-slate-900 transition-colors ${
+                        errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-slate-900'
                       }`}
                       placeholder="Enter your full name"
                     />
@@ -196,12 +205,12 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                     Email address
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                      <EnvelopeIcon className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                       id="email"
@@ -211,8 +220,8 @@ export default function Register() {
                       required
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors ${
-                        errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:ring-slate-900 transition-colors ${
+                        errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-slate-900'
                       }`}
                       placeholder="Enter your email"
                     />
@@ -223,12 +232,12 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
                     Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LockClosedIcon className="h-5 w-5 text-gray-400" />
+                      <LockClosedIcon className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                       id="password"
@@ -238,8 +247,8 @@ export default function Register() {
                       required
                       value={formData.password}
                       onChange={(e) => handleInputChange('password', e.target.value)}
-                      className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors ${
-                        errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                      className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-slate-900 transition-colors ${
+                        errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-slate-900'
                       }`}
                       placeholder="Create a strong password"
                     />
@@ -249,9 +258,9 @@ export default function Register() {
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeSlashIcon className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                       ) : (
-                        <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeIcon className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                       )}
                     </button>
                   </div>
@@ -276,23 +285,23 @@ export default function Register() {
                         ))}
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className={`flex items-center ${passwordStrength.checks.length ? 'text-green-600' : 'text-gray-400'}`}>
+                        <div className={`flex items-center ${passwordStrength.checks.length ? 'text-green-600' : 'text-slate-400'}`}>
                           {passwordStrength.checks.length ? <CheckCircleIcon className="h-3 w-3 mr-1" /> : <XCircleIcon className="h-3 w-3 mr-1" />}
                           8+ characters
                         </div>
-                        <div className={`flex items-center ${passwordStrength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                        <div className={`flex items-center ${passwordStrength.checks.uppercase ? 'text-green-600' : 'text-slate-400'}`}>
                           {passwordStrength.checks.uppercase ? <CheckCircleIcon className="h-3 w-3 mr-1" /> : <XCircleIcon className="h-3 w-3 mr-1" />}
                           Uppercase
                         </div>
-                        <div className={`flex items-center ${passwordStrength.checks.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                        <div className={`flex items-center ${passwordStrength.checks.lowercase ? 'text-green-600' : 'text-slate-400'}`}>
                           {passwordStrength.checks.lowercase ? <CheckCircleIcon className="h-3 w-3 mr-1" /> : <XCircleIcon className="h-3 w-3 mr-1" />}
                           Lowercase
                         </div>
-                        <div className={`flex items-center ${passwordStrength.checks.number ? 'text-green-600' : 'text-gray-400'}`}>
+                        <div className={`flex items-center ${passwordStrength.checks.number ? 'text-green-600' : 'text-slate-400'}`}>
                           {passwordStrength.checks.number ? <CheckCircleIcon className="h-3 w-3 mr-1" /> : <XCircleIcon className="h-3 w-3 mr-1" />}
                           Number
                         </div>
-                        <div className={`flex items-center ${passwordStrength.checks.special ? 'text-green-600' : 'text-gray-400'} col-span-2`}>
+                        <div className={`flex items-center ${passwordStrength.checks.special ? 'text-green-600' : 'text-slate-400'} col-span-2`}>
                           {passwordStrength.checks.special ? <CheckCircleIcon className="h-3 w-3 mr-1" /> : <XCircleIcon className="h-3 w-3 mr-1" />}
                           Special character
                         </div>
@@ -306,12 +315,12 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
                     Confirm password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LockClosedIcon className="h-5 w-5 text-gray-400" />
+                      <LockClosedIcon className="h-5 w-5 text-slate-400" />
                     </div>
                     <input
                       id="confirmPassword"
@@ -321,8 +330,8 @@ export default function Register() {
                       required
                       value={formData.confirmPassword}
                       onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                      className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 transition-colors ${
-                        errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500'
+                      className={`block w-full pl-10 pr-10 py-3 border rounded-lg focus:ring-2 focus:ring-slate-900 transition-colors ${
+                        errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-slate-900'
                       }`}
                       placeholder="Confirm your password"
                     />
@@ -332,9 +341,9 @@ export default function Register() {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                       {showConfirmPassword ? (
-                        <EyeSlashIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeSlashIcon className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                       ) : (
-                        <EyeIcon className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeIcon className="h-5 w-5 text-slate-400 hover:text-slate-600" />
                       )}
                     </button>
                   </div>
@@ -346,7 +355,7 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? (
                     <>
@@ -359,11 +368,11 @@ export default function Register() {
                 </button>
 
                 <div className="text-center">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-slate-600">
                     Already have an account?{' '}
                     <Link
                       to="/login"
-                      className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                      className="font-medium text-slate-600 hover:text-slate-500 transition-colors"
                     >
                       Sign in here
                     </Link>
@@ -373,7 +382,7 @@ export default function Register() {
             </div>
 
             {/* Footer */}
-            <div className="mt-8 text-center text-xs text-gray-500">
+            <div className="mt-8 text-center text-xs text-slate-500">
               <p>© 2025 ThinkDocs. Built for students and researchers.</p>
             </div>
           </div>
